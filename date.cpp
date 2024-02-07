@@ -2,9 +2,11 @@
 #include <string>
 #include <vector>
 
+#define WEEK 7
+
 const char* monthNames[] = {
-        "jan", "feb", "mar", "apr", "may", "jun",
-        "jul", "aug", "sep", "oct", "nov", "dec"
+        "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+        "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
 };
 
 using namespace std;
@@ -133,11 +135,10 @@ private:
     Date* date;
     vector<Month> month;
     short int totalDays = 0;
-    short int holiday;
+    short int holiday;              // sarturday
 public:
 
     Calendar (Date& date) : date(&date) {
-
     }
     void createCalendar()
     {
@@ -151,65 +152,75 @@ public:
                 current.days.push_back(day);
             }
             month.push_back(current);
-
         }
         cout << "total days: " << totalDays <<endl;
     }
     void printCalendar()
     {
-        short int curCalendar;
+        bool next=0;
         for(int i = 0; i < 12; ++i)
         {
-            cout << month[i].monthName << ": " << endl;
-
-            int line = 0; // connection 1
+            cout << month[i].monthName << ":______________________" << endl;             // month name out
+            int spaces;
+            int monthDays;
+            int elapsed;
+            int strokes=0;
 
             for(int days = 1; days <= month[i].days.size() ; ++days )
             {
-                if(days==1)
+                monthDays = month[i].days.size();
+                if(days == 1)
                 {
-                    line = createSpaces();
-                    curCalendar = month[i].days.size();
+                    spaces = createSpaces();
+                    elapsed = monthDays - spaces ;
+                    ++strokes;
                 }
-                cout << "\t" << month[i].days[days-1];
-                if(days % 7 - line-1 == 0)
+                if(spaces + days -1  == WEEK && next ==0)
+                {
+                    next=1;
                     cout << endl;
+                    ++strokes;
+                }
+                cout <<  month[i].days[days-1] << "\t" ;
+
+                if( spaces!= 0)
+                {
+                    if(days % WEEK - (WEEK-spaces) == 0 && next == 1)
+                    {
+                        cout << endl;
+                        elapsed-=7;++strokes;
+
+                    }
+                }
+                else if(days % WEEK - spaces == 0 && next == 1)
+                {
+                    cout << endl;
+                    elapsed-=7;++strokes;
+                }
             }
             cout << endl;
-            if(curCalendar == 31)
-                holiday-=1;
-            else if (curCalendar == 30)
-                holiday-=2;
-            else if (curCalendar == 29)
-                holiday-=3;
-            else if (curCalendar == 28)
-                holiday-=4;
-            if(holiday < 1)
-                holiday = 5;
-            cout << holiday <<endl;
+//            cout << strokes << endl;
+            holiday = strokes * WEEK - monthDays - spaces;
+//            cout << holiday << endl;
         }
     }
 
     short int createSpaces()
     {
-        if (holiday == 5)
+        int spc = 0;
+        for(int i = 0; i < WEEK - holiday ; ++i)
+        {
             cout << "\t" ;
-        else if (holiday == 4)
-            cout << "\t\t" ;
-        else if (holiday == 3)
-            cout << "\t\t\t" ;
-        else if (holiday == 2)
-            cout << "\t\t\t\t" ;
-        else if (holiday == 1)
-            cout << "\t\t\t\t\t" ;
-        return holiday;                 //connection 1
+            ++spc;
+        }
+        return spc;              //connection 1
     }
 
     // set sanday
-    void setHolidays(short int sunday) {
-        holiday = sunday;
-        if(holiday > 7)
-            holiday = 7;
+    void setHolidays(short int sarturday) {
+        holiday = sarturday;
+        if(holiday > WEEK)
+            holiday = WEEK;
         else if (holiday < 1)
             holiday = 1;
     }
@@ -217,11 +228,10 @@ public:
 
 int main ()
 {
-    Date date(32,8,2016);
+    Date date(32,8,2024);
     date.showDate();
-    cout << date.getMonthDays() <<endl;
     Calendar cal(date);
-    cal.setHolidays(4);
+    cal.setHolidays(7);
     cal.createCalendar();
     cal.printCalendar();
 
