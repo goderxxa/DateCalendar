@@ -1,6 +1,9 @@
 #include <iostream>
-#include <string>
+//#include <string>
 #include <vector>
+#include <iomanip>
+
+using namespace std;
 
 #define WEEK 7
 
@@ -9,7 +12,7 @@ const char* monthNames[] = {
         "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
 };
 
-using namespace std;
+
 
 class Day{
 private:
@@ -46,7 +49,7 @@ public:
     }
 
     bool checkMonth () {
-        unsigned int months[7] = {1, 3,5,7,8,10,12};
+        unsigned int months[7] = {1,3,5,7,8,10,12};
         for(int i=0; i< sizeof(months); ++i)
         {
             if(month == months[i])
@@ -136,6 +139,7 @@ private:
     vector<Month> month;
     short int totalDays = 0;
     short int holiday;              // sarturday
+    
 public:
 
     Calendar (Date& date) : date(&date) {
@@ -160,7 +164,10 @@ public:
         bool next=0;
         for(int i = 0; i < 12; ++i)
         {
-            cout << month[i].monthName << ":______________________" << endl;             // month name out
+            cout <<"_______________" << month[i].monthName << "________________" << endl;             // month name out
+            cout <<"Mon  Tue  Wed  Thu  Fri  Sat  Sun"  << endl; 
+            cout << endl;      
+
             int spaces;
             int monthDays;
             int elapsed;
@@ -181,7 +188,9 @@ public:
                     cout << endl;
                     ++strokes;
                 }
-                cout <<  month[i].days[days-1] << "\t" ;
+                if(spaces==0 && days==1)
+                    cout << "  " ;
+                cout <<  month[i].days[days-1] << "  " << setw(3)  ;
 
                 if( spaces!= 0)
                 {
@@ -189,7 +198,6 @@ public:
                     {
                         cout << endl;
                         elapsed-=7;++strokes;
-
                     }
                 }
                 else if(days % WEEK - spaces == 0 && next == 1)
@@ -210,7 +218,9 @@ public:
         int spc = 0;
         for(int i = 0; i < WEEK - holiday ; ++i)
         {
-            cout << "\t" ;
+            if(i==0)
+                cout << "  ";
+            cout << "     " ;
             ++spc;
         }
         return spc;              //connection 1
@@ -234,5 +244,6 @@ int main ()
     cal.setHolidays(7);
     cal.createCalendar();
     cal.printCalendar();
+    system("pause");
 
 }
