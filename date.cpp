@@ -14,7 +14,7 @@ const char* monthNames[] = {
 
 class Day{
 private:
-    unsigned int numDay;
+    int numDay;
     string month;
 };
 
@@ -26,18 +26,18 @@ public:
 
 class Date {
 private:
-    unsigned int day;
-    unsigned int month;
-    unsigned int year;
-    unsigned int curM;
+    int day;
+    int month;
+    int year;
+    int curM;
 
 public:
-    unsigned int getYear()
+    int getYear()
     {
         return year;
     }
 
-    Date (unsigned int day, unsigned int month,unsigned int year) : day(day), month(month), year(year)
+    Date (int day, int month,int year) : day(day), month(month), year(year)
     {
         setDate();
     }
@@ -50,11 +50,11 @@ public:
             return 28;
         else if (year % 4 == 0 )
             return 29;
-        return false;
+        return 28;
     }    
 
     bool checkMonth () {
-        unsigned int months[7] = {1,3,5,7,8,10,12};
+        int months[7] = {1,3,5,7,8,10,12};
         for(int i=0; i< sizeof(months); ++i)
         {
             if(month == months[i])
@@ -110,7 +110,7 @@ public:
 
 
     // overloaded
-    int getMonthDays(unsigned int& curMonth)
+    int getMonthDays(int& curMonth)
     {
         curM = curMonth;
         if(checkCurMonth(curM))        //RETURN 31 DAYS
@@ -125,9 +125,9 @@ public:
             return checkYear();     //RETURN 28-29 DAYS
     }
 
-    bool checkCurMonth (unsigned int& curMonth)  {
+    bool checkCurMonth (int& curMonth)  {
         curM = curMonth;
-        unsigned int months[7] = {1, 3,5,7,8,10,12};
+        int months[7] = {1, 3,5,7,8,10,12};
         for(int i=0; i< sizeof(months); ++i)
         {
             if(curM == months[i])
@@ -142,8 +142,8 @@ class Calendar{
 private:
     Date* date;
     vector<Month> month;
-    short int totalDays = 0;
-    short int holiday;              // sarturday
+    int totalDays = 0;
+    int holiday;              // sarturday
     
 public:
 
@@ -151,7 +151,7 @@ public:
     }
     void createCalendar()
     {
-        for(unsigned int i = 1; i <= 12; ++i)
+        for(int i = 1; i <= 12; ++i)
         {
             Month current;
             current.monthName = monthNames[i-1];
@@ -218,7 +218,7 @@ public:
         }
     }
 
-    short int createSpaces()
+    int createSpaces()
     {
         int spc = 0;
         for(int i = 0; i < WEEK - holiday ; ++i)
@@ -232,7 +232,7 @@ public:
     }
 
     // set sanday
-    void setHolidays(short int sarturday) {
+    void setHolidays(int sarturday) {
         holiday = sarturday;
         if(holiday > WEEK)
             holiday = WEEK;
@@ -250,10 +250,10 @@ class HollidayCalculate {
     {
         if(date.getYear() > year )
         {
-            cout << holliday << " ";
+            // cout << holliday << " ";
             for(int cur = year; cur != date.getYear(); ++cur )
             {
-                cout << cur << endl;
+                // cout << cur << endl;
                 if(checkYear(cur))
                 {
                     holliday -=2;
@@ -266,7 +266,7 @@ class HollidayCalculate {
                     holliday=7;
                 else if(holliday <0 )
                     holliday=6;
-                cout << holliday << " ";
+                // cout << holliday << " ";
             }                    
         }
         else if( date.getYear() < year )
@@ -282,10 +282,10 @@ class HollidayCalculate {
                 else if(holliday == 9 )
                     holliday=2;    
                     
-                cout << holliday << " ";           
+                // cout << holliday << " ";           
             }
         }  
-        cout << endl;
+        // cout << endl;
         return holliday;         
     }
 
@@ -303,7 +303,7 @@ class HollidayCalculate {
 
     private:
         Date* date;
-        unsigned int year = 2024;
+        int year = 2024;
         int holliday = 7;
 };
 
@@ -315,7 +315,7 @@ int main ()
     std::getline(std::cin, inputStr);
     std::stringstream inputDate(inputStr);
 
-    int day, month, year, holliday;
+    int day, month, year;
     inputDate >> day >> month >> year;
     Date date(day,month,year);
 
