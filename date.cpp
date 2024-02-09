@@ -1,7 +1,7 @@
 #include <iostream>
-//#include <string>
 #include <vector>
 #include <iomanip>
+#include <sstream>
 
 using namespace std;
 
@@ -11,8 +11,6 @@ const char* monthNames[] = {
         "Jan", "Feb", "Mar", "Apr", "May", "Jun",
         "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
 };
-
-
 
 class Day{
 private:
@@ -34,6 +32,11 @@ private:
     unsigned int curM;
 
 public:
+    unsigned int getYear()
+    {
+        return year;
+    }
+
     Date (unsigned int day, unsigned int month,unsigned int year) : day(day), month(month), year(year)
     {
         setDate();
@@ -41,12 +44,14 @@ public:
 
     int checkYear ()
     {
-        if(year % 4 == 0 || year % 400 == 0 )
+        if( year % 400 == 0 )
             return 29;
-        if(year % 100 == 0 && year % 400 == 0 )
+        else if(year % 100 == 0 )
+            return 28;
+        else if (year % 4 == 0 )
             return 29;
-        return 28;
-    }
+        return false;
+    }    
 
     bool checkMonth () {
         unsigned int months[7] = {1,3,5,7,8,10,12};
@@ -236,12 +241,89 @@ public:
     }
 };
 
+class HollidayCalculate {
+    public:
+
+    HollidayCalculate () {}
+
+    int getHoliday(Date& date)
+    {
+        if(date.getYear() > year )
+        {
+            cout << holliday << " ";
+            for(int cur = year; cur != date.getYear(); ++cur )
+            {
+                cout << cur << endl;
+                if(checkYear(cur))
+                {
+                    holliday -=2;
+                }                    
+                else if(!checkYear(cur))
+                {
+                    holliday -=1;
+                }
+                if(holliday == 0)
+                    holliday=7;
+                else if(holliday <0 )
+                    holliday=6;
+                cout << holliday << " ";
+            }                    
+        }
+        else if( date.getYear() < year )
+        {
+            for(int cur = year; cur != date.getYear(); --cur )
+            {
+                if( checkYear(cur) )
+                    holliday +=2;
+                if(!checkYear(cur))    
+                    holliday +=1;
+                if(holliday == 8)
+                    holliday=1;
+                else if(holliday == 9 )
+                    holliday=2;    
+                    
+                cout << holliday << " ";           
+            }
+        }  
+        cout << endl;
+        return holliday;         
+    }
+
+    bool checkYear (int& y)
+    {
+        if(y % 400 ==0 )
+            return true;
+        else if(y % 100 == 0 )
+            return false;
+        else if (y % 4 == 0 )
+            return true;
+        return false;
+
+    }
+
+    private:
+        Date* date;
+        unsigned int year = 2024;
+        int holliday = 7;
+};
+
 int main ()
-{
-    Date date(32,8,2024);
-    date.showDate();
+{        
+    std::cout << "Enter date (day, month, year): ";
+    std::string inputStr;
+
+    std::getline(std::cin, inputStr);
+    std::stringstream inputDate(inputStr);
+
+    int day, month, year, holliday;
+    inputDate >> day >> month >> year;
+    Date date(day,month,year);
+
     Calendar cal(date);
-    cal.setHolidays(7);
+    HollidayCalculate calc;
+    cal.setHolidays(calc.getHoliday(date));
+    
+    date.showDate();    
     cal.createCalendar();
     cal.printCalendar();
     system("pause");
