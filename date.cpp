@@ -6,6 +6,13 @@
 using namespace std;
 
 #define WEEK 7
+#define MONTH 12
+#define LEAP_Y 29
+#define LEAP_N 28
+#define MONTH_31 31
+#define MONTH_30 30
+#define MINUS_LEAP 2
+#define MINUS_NOT_LEAP 1
 
 const char* monthNames[] = {
         "Jan", "Feb", "Mar", "Apr", "May", "Jun",
@@ -45,12 +52,12 @@ public:
     int checkYear ()
     {
         if( year % 400 == 0 )
-            return 29;
+            return LEAP_Y;
         else if(year % 100 == 0 )
-            return 28;
+            return LEAP_N;
         else if (year % 4 == 0 )
-            return 29;
-        return 28;
+            return LEAP_Y;
+        return LEAP_N;
     }    
 
     bool checkMonth () {
@@ -66,18 +73,18 @@ public:
     void setDate () {
         if (month < 1)
             month = 1;
-        if (month > 12)
-            month = 12;
+        if (month > MONTH)
+            month = MONTH;
         if (checkMonth()) {
-            if (day > 31)
-                day = 31;
+            if (day > MONTH_31)
+                day = MONTH_31;
             if (day < 1)
                 day = 1;
         }
         else if(month!=2)
         {
-            if (day > 30)
-                day = 30;
+            if (day > MONTH_30)
+                day = MONTH_30;
             if (day < 1)
                 day = 1;
         }
@@ -99,11 +106,11 @@ public:
     {
         if(checkMonth())        //RETURN 31 DAYS
         {
-            return 31;
+            return MONTH_31;
         }
         else if(month!=2)       //RETURN 30 DAYS
         {
-            return 30;
+            return MONTH_30;
         }
         return checkYear();     //RETURN 28-29 DAYS
     }
@@ -113,27 +120,27 @@ public:
     int getMonthDays(int& curMonth)
     {
         curM = curMonth;
-        if(checkCurMonth(curM))        //RETURN 31 DAYS
+        if(checkCurMonth(curM))         //RETURN 31 DAYS
         {
-            return 31;
+            return MONTH_31;
         }
-        else if(curM!=2)       //RETURN 30 DAYS
+        else if(curM!=2)                //RETURN 30 DAYS
         {
-            return 30;
+            return MONTH_30;
         }
         else
-            return checkYear();     //RETURN 28-29 DAYS
+            return checkYear();         //RETURN 28-29 DAYS
     }
 
     bool checkCurMonth (int& curMonth)  {
         curM = curMonth;
-        int months[7] = {1, 3,5,7,8,10,12};
+        int months[7] = {1,3,5,7,8,10,12};              // 31 days
         for(int i=0; i< sizeof(months); ++i)
         {
             if(curM == months[i])
                 return true;
         }
-        return false;       //RETURN 31 DAYS
+        return false;                                    //RETURN 31 DAYS
     };
 
 };
@@ -151,13 +158,13 @@ public:
     }
     void createCalendar()
     {
-        for(int i = 1; i <= 12; ++i)
+        for(int i = 1; i <= MONTH; ++i)
         {
             Month current;
             current.monthName = monthNames[i-1];
             for(int day = 1; day <= date->getMonthDays(i); ++day )
             {
-                ++totalDays;                // TOTAL DAYS CALCULATE
+                ++totalDays;                                                // TOTAL DAYS CALCULATE
                 current.days.push_back(day);
             }
             month.push_back(current);
@@ -167,7 +174,7 @@ public:
     void printCalendar()
     {
         bool next=0;
-        for(int i = 0; i < 12; ++i)
+        for(int i = 0; i < MONTH; ++i)
         {
             cout <<"_______________" << month[i].monthName << "________________" << endl;             // month name out
             cout <<"Mon  Tue  Wed  Thu  Fri  Sat  Sun"  << endl; 
@@ -183,7 +190,7 @@ public:
                 monthDays = month[i].days.size();
                 if(days == 1)
                 {
-                    spaces = createSpaces();
+                    spaces = createSpaces();                                //connection
                     elapsed = monthDays - spaces ;
                     ++strokes;
                 }
@@ -228,10 +235,10 @@ public:
             cout << "     " ;
             ++spc;
         }
-        return spc;              //connection 1
+        return spc;                                                        //connection 1
     }
 
-    // set sanday
+    // set sunday
     void setHolidays(int sarturday) {
         holiday = sarturday;
         if(holiday > WEEK)
@@ -256,16 +263,16 @@ class HollidayCalculate {
                 // cout << cur << endl;
                 if(checkYear(cur))
                 {
-                    holliday -=2;
+                    holliday -= MINUS_LEAP;
                 }                    
                 else if(!checkYear(cur))
                 {
-                    holliday -=1;
+                    holliday -= MINUS_NOT_LEAP;
                 }
                 if(holliday == 0)
-                    holliday = 7;
+                    holliday = WEEK;                    //if you change const values you need to change this
                 else if(holliday < 0 )
-                    holliday = 6;
+                    holliday = WEEK-1;                  //if you change const values you need to change this
                 // cout << holliday << " ";
             }                    
         }
@@ -274,12 +281,12 @@ class HollidayCalculate {
             for(int cur = date.getYear(); cur != year; ++cur )
             {
                 if( checkYear(cur) )
-                    holliday +=2;
+                    holliday += MINUS_LEAP;
                 if(!checkYear(cur))    
-                    holliday +=1;
-                if(holliday == 8)
+                    holliday += MINUS_NOT_LEAP;
+                if(holliday == WEEK+1)                  //if you change const values you need to change this
                     holliday=1;
-                else if(holliday > 8 )
+                else if(holliday > WEEK+1 )             //if you change const values you need to change this
                     holliday=2;    
                     
                 // cout << holliday << " ";           
@@ -298,13 +305,12 @@ class HollidayCalculate {
         else if (y % 4 == 0 )
             return true;
         return false;
-
     }
 
     private:
         Date* date;
-        int year = 2024;
-        int holliday = 7;
+        int year = 2024;        //set original date and sunday holliday
+        int holliday = 7;       
 };
 
 int main ()
@@ -315,7 +321,7 @@ int main ()
     std::getline(std::cin, inputStr);
     std::stringstream inputDate(inputStr);
 
-    int day, month, year;
+    int day, month, year, holliday;
     inputDate >> day;
     inputDate.ignore();
     inputDate >> month;
@@ -323,9 +329,18 @@ int main ()
     inputDate >> year;
 
     Date date(day,month,year);
-
     Calendar cal(date);
+
+    // std::cout << "Enter first sunday date: ";
+    // inputDate.clear();
+    // inputStr.clear();
+    // std::getline(std::cin, inputStr);
+    // inputDate >> holliday;
+
     HollidayCalculate calc;
+
+    // cal.setHolidays(holliday);
+
     cal.setHolidays(calc.getHoliday(date));
     
     date.showDate();    
