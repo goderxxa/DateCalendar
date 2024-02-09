@@ -316,7 +316,12 @@ int main ()
     std::stringstream inputDate(inputStr);
 
     int day, month, year;
-    inputDate >> day >> month >> year;
+    inputDate >> day;
+    inputDate.ignore();
+    inputDate >> month;
+    inputDate.ignore();
+    inputDate >> year;
+
     Date date(day,month,year);
 
     Calendar cal(date);
