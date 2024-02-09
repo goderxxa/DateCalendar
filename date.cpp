@@ -263,15 +263,15 @@ class HollidayCalculate {
                     holliday -=1;
                 }
                 if(holliday == 0)
-                    holliday=7;
-                else if(holliday <0 )
-                    holliday=6;
+                    holliday = 7;
+                else if(holliday < 0 )
+                    holliday = 6;
                 // cout << holliday << " ";
             }                    
         }
         else if( date.getYear() < year )
         {
-            for(int cur = year; cur != date.getYear(); --cur )
+            for(int cur = date.getYear(); cur != year; ++cur )
             {
                 if( checkYear(cur) )
                     holliday +=2;
@@ -279,7 +279,7 @@ class HollidayCalculate {
                     holliday +=1;
                 if(holliday == 8)
                     holliday=1;
-                else if(holliday == 9 )
+                else if(holliday > 8 )
                     holliday=2;    
                     
                 // cout << holliday << " ";           
@@ -291,7 +291,7 @@ class HollidayCalculate {
 
     bool checkYear (int& y)
     {
-        if(y % 400 ==0 )
+        if(y % 400 == 0 )
             return true;
         else if(y % 100 == 0 )
             return false;
